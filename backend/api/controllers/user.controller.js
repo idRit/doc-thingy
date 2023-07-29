@@ -69,10 +69,13 @@ exports.getUser = async (req, res) => {
 
 exports.searchUser = async (req, res) => {
   const name = req.params.name;
-
   try {
+    if (name === 'all') {
+      const data = await userDetailsModel.find();
+      return res.status(200).json(data);
+    }
     const data = await userDetailsModel.find({ "general.name": { $regex: name, $options: "i" } });
-    return res.status(200).send(data);
+    return res.status(200).json(data);
   } catch (err) {
     return res.status(500).send({
       message: err.message || "Some error occurred while retrieving user.",

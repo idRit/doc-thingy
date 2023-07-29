@@ -11,11 +11,15 @@
   import PhysicalActivities from "../components/PhysicalActivities.svelte";
   import RehabGoals from "../components/RehabGoals.svelte";
   import Crdq from "../components/Crdq.svelte";
+
+  import Dashboard from "../screens/Dashboard.svelte";
 </script>
+
+<Dashboard />
 
 <div class="grid">
   <General />
-  <Housing />
+  <!-- <Housing />
   <Cormo />
   <History />
   <Symptoms />
@@ -25,7 +29,7 @@
   <Investigations />
   <PhysicalActivities />
   <RehabGoals />
-  <Crdq />
+  <Crdq /> -->
 </div>
 
 <style>

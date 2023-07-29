@@ -14,9 +14,11 @@
   let marital_status = "single"; // Default to 'single'
   let referred_doctor = "";
 
+  import { createDetails } from "../util/requests";
+
   // Function to handle form submission
   function handleSubmit() {
-    const general = {
+    const details = {
       general: {
         name,
         dob,
@@ -35,7 +37,9 @@
       }
     };
 
-    console.log(general);
+    createDetails(details.general).then(result => {
+      console.log('res: ', result);
+    });
   }
 </script>
 
