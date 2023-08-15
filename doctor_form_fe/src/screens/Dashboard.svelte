@@ -10,6 +10,8 @@
     patients = (await getList()).map(patient => ({
       id: patient._id,
       name: patient.general.name,
+      age: patient.general.age,
+      sex: patient.general.sex,
     }));
 
     console.log('patients: ', patients);
@@ -60,14 +62,14 @@
     on:input={handleSearch}
   />
 
-  <!-- Create button -->
-  <button on:click={handleCreate}>Create</button>
-
   <!-- Table of contents -->
   <table>
     <thead>
       <tr>
         <th>Patient Name</th>
+        <th>Patient Age</th>
+        <th>Patient Sex</th>
+        <th>Patient E-Mail</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -75,11 +77,16 @@
       {#each patients as patient}
         <tr key={patient.id}>
           <td>{patient.name}</td>
+          <td>{patient.age}</td>
+          <td>{patient.sex}</td>
           <td>
-            <button on:click={() => handleEdit(patient.id)}>Edit</button>
+            <a href="#" on:click={() => handleEdit(patient.id)}>Edit</a>
           </td>
         </tr>
       {/each}
     </tbody>
   </table>
+
+  <!-- Create button -->
+  <button on:click={handleCreate}>Create</button>
 </main>

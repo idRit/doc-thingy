@@ -1,20 +1,25 @@
 <script>
-  let name = "";
-  let dob = "";
-  let age = "";
-  let height = "";
-  let weight = "";
-  let bmi = "";
-  let sex = "m"; // Default to 'm' (male)
-  let address = "";
-  let telephone_number = "";
-  let mobile_number = "";
-  let email = "";
-  let occupation = "";
-  let marital_status = "single"; // Default to 'single'
-  let referred_doctor = "";
+  export let name = "";
+  export let dob = "";
+  export let age = "";
+  export let height = "";
+  export let weight = "";
+  export let bmi = "";
+  export let sex = "m"; // Default to 'm' (male)
+  export let address = "";
+  export let telephone_number = "";
+  export let mobile_number = "";
+  export let email = "";
+  export let occupation = "";
+  export let marital_status = "single"; // Default to 'single'
+  export let referred_doctor = "";
+  export let isEdit = false;
+  export let patientId = "";
 
   import { createDetails } from "../util/requests";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   // Function to handle form submission
   function handleSubmit() {
@@ -34,12 +39,23 @@
         occupation,
         marital_status,
         referred_doctor,
-      }
+      },
     };
 
-    createDetails(details.general).then(result => {
-      console.log('res: ', result);
-    });
+    if (isEdit) {
+      updateDetails("general", patientId, details.general).then((result) => {
+        console.log("res: ", result);
+        dispatch("edit", {
+          result,
+        });
+      });
+    } else
+      createDetails(details.general).then((result) => {
+        console.log("res: ", result);
+        dispatch("edit", {
+          result,
+        });
+      });
   }
 </script>
 

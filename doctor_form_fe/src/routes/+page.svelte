@@ -13,24 +13,52 @@
   import Crdq from "../components/Crdq.svelte";
 
   import Dashboard from "../screens/Dashboard.svelte";
+
+  let toggleDashboard = true;
+  let editPatient = {};
+  let isEdit = false;
+
+  const editPatientDetails = (event) => {
+    console.log("editPatientDetails: ", event.detail);
+    editPatient = event.detail;
+    isEdit = true;
+    toggleDashboard = false;
+  };
+
+  const attributesEdited = (event) => {
+    console.log("attributesEdited: ", event.detail);
+    window.location.reload();
+  };
+
 </script>
 
-<Dashboard />
-
-<div class="grid">
-  <General />
-  <!-- <Housing />
-  <Cormo />
-  <History />
-  <Symptoms />
-  <Fatigue />
-  <Vaccination />
-  <Misc />
-  <Investigations />
-  <PhysicalActivities />
-  <RehabGoals />
-  <Crdq /> -->
-</div>
+{#if toggleDashboard}
+  <Dashboard 
+    on:edit={editPatientDetails} 
+    on:create={editPatientDetails}
+  />
+{:else}
+  <div class="grid">
+    <General
+      { ...editPatient.patient.general, 
+        isEdit
+      }
+      patientId={editPatient.patient._id}
+      on:edit={attributesEdited} 
+    />
+    <!-- <Housing />
+    <!-- <Cormo /> 
+    <History />
+    <Symptoms />
+    <Fatigue />
+    <Vaccination />
+    <Misc />
+    <Investigations />
+    <PhysicalActivities />
+    <RehabGoals />
+    <Crdq /> -->
+  </div>
+{/if}
 
 <style>
   /* CSS for the "grid" class */
