@@ -11,7 +11,7 @@ export const createDetails = async (payload) => {
 };
 
 export const updateDetails = async (section = 'general', userId, payload) => {
-  const response = await fetch(`http://localhost:3000/api/v1/user/${userId}/${section}`, {
+  const response = await fetch(`http://localhost:3000/api/v1/user/${section}/${userId}/edit-profile`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

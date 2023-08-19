@@ -47,6 +47,7 @@ exports.editUser = async (req, res) => {
 
   try {
     await userDetailsModel.updateOne({ _id: id }, { [req.params.section]: req.body });
+    return res.status(200).send({ updated: true });
   } catch (err) {
     return res.status(500).send({
       message: err.message || "Some error occurred while retrieving user.",

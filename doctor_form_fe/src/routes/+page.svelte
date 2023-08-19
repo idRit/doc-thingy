@@ -18,10 +18,10 @@
   let editPatient = {};
   let isEdit = false;
 
-  const editPatientDetails = (event) => {
+  const editCreatePatientDetails = (isEditable = false) => (event) => {
     console.log("editPatientDetails: ", event.detail);
     editPatient = event.detail;
-    isEdit = true;
+    isEdit = isEditable;
     toggleDashboard = false;
   };
 
@@ -34,20 +34,19 @@
 
 {#if toggleDashboard}
   <Dashboard 
-    on:edit={editPatientDetails} 
-    on:create={editPatientDetails}
+    on:edit={editCreatePatientDetails(true)} 
+    on:create={editCreatePatientDetails()}
   />
 {:else}
+  <button on:click={() => toggleDashboard = true}>Close</button>
   <div class="grid">
     <General
-      { ...editPatient.patient.general, 
-        isEdit
-      }
-      patientId={editPatient.patient._id}
+      { ...editPatient.patient?.general }
+      isEdit={isEdit}
+      patientId={editPatient.patient?._id}
       on:edit={attributesEdited} 
     />
     <!-- <Housing />
-    <!-- <Cormo /> 
     <History />
     <Symptoms />
     <Fatigue />

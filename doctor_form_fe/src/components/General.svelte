@@ -16,7 +16,7 @@
   export let isEdit = false;
   export let patientId = "";
 
-  import { createDetails } from "../util/requests";
+  import { createDetails, updateDetails } from "../util/requests";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
@@ -41,6 +41,8 @@
         referred_doctor,
       },
     };
+
+    console.log({ isEdit });
 
     if (isEdit) {
       updateDetails("general", patientId, details.general).then((result) => {

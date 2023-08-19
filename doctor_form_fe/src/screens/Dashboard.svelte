@@ -5,6 +5,7 @@
   const dispatch = createEventDispatcher();
 
   let patients = [];
+  let showTable = false;
 
   onMount(async () => {
     patients = (await getList()).map(patient => ({
@@ -25,7 +26,10 @@
     patients = (await getList(searchText.length ? searchText : 'all')).map(patient => ({
       id: patient._id,
       name: patient.general.name,
+      age: patient.general.age,
+      sex: patient.general.sex,
     }));
+    showTable = true;
   }
 
   // Function to handle the "Edit" button click
@@ -63,6 +67,7 @@
   />
 
   <!-- Table of contents -->
+  {#if showTable}
   <table>
     <thead>
       <tr>
@@ -86,6 +91,7 @@
       {/each}
     </tbody>
   </table>
+  {/if}
 
   <!-- Create button -->
   <button on:click={handleCreate}>Create</button>
