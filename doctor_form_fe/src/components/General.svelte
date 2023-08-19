@@ -13,6 +13,7 @@
   export let occupation = "";
   export let marital_status = "single"; // Default to 'single'
   export let referred_doctor = "";
+
   export let isEdit = false;
   export let patientId = "";
 
@@ -41,8 +42,6 @@
         referred_doctor,
       },
     };
-
-    console.log({ isEdit });
 
     if (isEdit) {
       updateDetails("general", patientId, details.general).then((result) => {

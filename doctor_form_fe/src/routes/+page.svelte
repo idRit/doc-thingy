@@ -46,8 +46,13 @@
       patientId={editPatient.patient?._id}
       on:edit={attributesEdited} 
     />
-    <!-- <Housing />
-    <History />
+    <Housing 
+      { ...editPatient.patient?.housing }
+      isEdit={isEdit}
+      patientId={editPatient.patient?._id}
+      on:edit={attributesEdited}
+    />
+    <!-- <History />
     <Symptoms />
     <Fatigue />
     <Vaccination />
