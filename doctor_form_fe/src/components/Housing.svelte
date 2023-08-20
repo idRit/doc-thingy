@@ -9,11 +9,13 @@
 
   import { createDetails, updateDetails } from "../util/requests";
   import { createEventDispatcher } from "svelte";
+  import { submit, handleSubmit } from "../stores/submitSync.store";
 
   const dispatch = createEventDispatcher();
 
-  // Function to handle form submission
-  function handleSubmit() {
+  const unsubscribe = submit.subscribe((value) => {
+    if (!value) return;
+
     const details = {
       housing: {
         type,
@@ -23,23 +25,13 @@
       },
     };
 
-    if (isEdit) {
-      updateDetails("housing", patientId, details.housing).then((result) => {
-        console.log("res: ", result);
-        dispatch("edit", {
-          result,
-        });
-      });
-    } else
-      createDetails(details.housing).then((result) => {
-        console.log("res: ", result);
-        dispatch("edit", {
-          result,
-        });
-      });
-
-    console.log(housing);
-  }
+    handleSubmit.update(val => {
+      if (!val) val = {};
+      val.sections = val.sections ? [...val.sections, 'housing'] : ['housing'];
+      val.data = val.data ? {...val.data, ...details} : details;  
+      return val;
+    });
+	});
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
@@ -68,5 +60,5 @@
     <textarea bind:value={need_for_stairs} />
   </label>
 
-  <button type="submit">Submit</button>
+  <!-- <button type="submit">Submit</button> -->
 </form>

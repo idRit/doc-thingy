@@ -15,15 +15,16 @@
   export let referred_doctor = "";
 
   export let isEdit = false;
-  export let patientId = "";
+
+  let details = {};
 
   import { createDetails, updateDetails } from "../util/requests";
   import { createEventDispatcher } from "svelte";
+  import { submit, handleSubmit } from "../stores/submitSync.store";
 
-  const dispatch = createEventDispatcher();
+  const unsubscribe = submit.subscribe((value) => {
+    if (!value) return;
 
-  // Function to handle form submission
-  function handleSubmit() {
     const details = {
       general: {
         name,
@@ -43,21 +44,13 @@
       },
     };
 
-    if (isEdit) {
-      updateDetails("general", patientId, details.general).then((result) => {
-        console.log("res: ", result);
-        dispatch("edit", {
-          result,
-        });
-      });
-    } else
-      createDetails(details.general).then((result) => {
-        console.log("res: ", result);
-        dispatch("edit", {
-          result,
-        });
-      });
-  }
+    handleSubmit.update(val => {
+      if (!val) val = {};
+      val.sections = val.sections ? [...val.sections, 'general'] : ['general'];
+      val.data = val.data ? {...val.data, ...details} : details;
+      return val;
+    });
+	});
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
@@ -140,5 +133,5 @@
     <input type="text" bind:value={referred_doctor} />
   </label>
 
-  <button type="submit">Submit</button>
+  <!-- <button type="submit">Submit</button> -->
 </form>

@@ -13,46 +13,86 @@
   import Crdq from "../components/Crdq.svelte";
 
   import Dashboard from "../screens/Dashboard.svelte";
+  import { onMount } from "svelte";
+  import { submit, handleSubmit } from "../stores/submitSync.store";
+  import { createDetails, updateDetails } from "../util/requests";
 
   let toggleDashboard = true;
   let editPatient = {};
   let isEdit = false;
 
-  const editCreatePatientDetails = (isEditable = false) => (event) => {
-    console.log("editPatientDetails: ", event.detail);
-    editPatient = event.detail;
-    isEdit = isEditable;
-    toggleDashboard = false;
-  };
+  const editCreatePatientDetails =
+    (isEditable = false) =>
+    (event) => {
+      console.log("editPatientDetails: ", event.detail);
+      editPatient = event.detail;
+      isEdit = isEditable;
+      toggleDashboard = false;
+    };
 
   const attributesEdited = (event) => {
-    console.log("attributesEdited: ", event.detail);
+    console.log("attributesEdited: ", event?.detail);
     window.location.reload();
   };
 
+  const submitHandler = () => {
+    console.log("submitHandler");
+    submit.update((val) => true);
+  };
+
+  handleSubmit.subscribe((event) => {
+    if (!Object.keys(event).length) return;
+    console.log({ isEdit });
+    if (isEdit) {
+      if (event.sections.length < 2) return;
+      console.log("editing: ", editPatient.patient._id);
+      Promise.all(event.sections.map(section => {
+        updateDetails(section, editPatient.patient._id, event.data[section])
+      })).then((result) => {
+        console.log("res: ", result);
+        attributesEdited();
+        submit.update((val) => false);
+      });
+    } else {
+      if (event.sections.length > 1) return;
+      console.log("creating: ", event);
+      createDetails(event.data.general).then((result) => {
+        console.log("res: ", result);
+        attributesEdited();
+        submit.update((val) => false);
+      });
+    }
+  });
+
+  const close = () => {
+    toggleDashboard = true;
+    submit.update((val) => false);
+    handleSubmit.update((val) => ({}));
+  };
 </script>
 
 {#if toggleDashboard}
-  <Dashboard 
-    on:edit={editCreatePatientDetails(true)} 
+  <Dashboard
+    on:edit={editCreatePatientDetails(true)}
     on:create={editCreatePatientDetails()}
   />
 {:else}
-  <button on:click={() => toggleDashboard = true}>Close</button>
+  <button on:click={close}>Close</button>
   <div class="grid">
     <General
-      { ...editPatient.patient?.general }
-      isEdit={isEdit}
-      patientId={editPatient.patient?._id}
-      on:edit={attributesEdited} 
-    />
-    <Housing 
-      { ...editPatient.patient?.housing }
-      isEdit={isEdit}
+      {...editPatient.patient?.general}
+      {isEdit}
       patientId={editPatient.patient?._id}
       on:edit={attributesEdited}
     />
-    <!-- <History />
+    {#if isEdit && !toggleDashboard}
+      <Housing
+        {...editPatient.patient?.housing}
+        {isEdit}
+        patientId={editPatient.patient?._id}
+        on:edit={attributesEdited}
+      />
+      <!-- <History />
     <Symptoms />
     <Fatigue />
     <Vaccination />
@@ -61,6 +101,8 @@
     <PhysicalActivities />
     <RehabGoals />
     <Crdq /> -->
+    {/if}
+    <button on:click={submitHandler}>Submit</button>
   </div>
 {/if}
 
